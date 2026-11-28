@@ -23,17 +23,19 @@ result, err := tc.Captcha.GetVerificationResult(ctx, r.FormValue("tc-verificatio
 if err == nil && result.GetVerificationPassed() { /* … */ }
 ```
 
-Create the API key (`ak_…`) in the dashboard under the project's API keys. The key decides which modules the client can use.
+Create the API key (`ak_…`) in the dashboard under the project's API keys, or under the agency's API keys to reach its client projects. The key decides which projects and modules the client can use.
 
 ## Every module
 
 The client is `module → resource → operation`, with the same names in every language:
 
 ```go
-tc.Analytics.Websites.GetWebsites(ctx).Execute()
-tc.TaxValidation.Validations.CreateValidation(ctx).TaxValidationValidationCreateParams(*api.NewTaxValidationValidationCreateParams("DE", "DE811569869")).Execute()
+projects, _, _ := tc.Platform.Projects.GetProjects(ctx).Execute()
+projectID := projects.Content[0].Id
+tc.Analytics.Websites.GetWebsites(ctx, projectID).Execute()
+tc.TaxValidation.Validations.CreateValidation(ctx, projectID).TaxValidationValidationCreateParams(*api.NewTaxValidationValidationCreateParams("DE", "DE811569869")).Execute()
 tc.Monitoring.Heartbeats.PingHeartbeat(ctx, serviceID, monitorID).Execute()
-tc.Platform.Events.GetEvents(ctx).Execute()
+tc.Platform.Events.GetEventsOfProject(ctx, projectID).Execute()
 ```
 
 The full reference of every operation is at https://docs.trustcomponent.com.
@@ -53,7 +55,7 @@ Every request names the SDK in `User-Agent` and `TrustComponent-Sdk`, together w
 ## Errors
 
 Every error is a `*trustcomponent.Error` carrying the HTTP status and the stable `code` of the API:
-`IsInvalidRequest`, `IsAuthentication`, `IsPermission`, `IsPlanLimit`, `IsNotFound`, `IsConflict`, `IsGone`, `IsRateLimit`, `IsServer`, `IsOperationRetired`; no response at all is a `*trustcomponent.ConnectionError`, an invalid widget token `trustcomponent.ErrVerificationTokenInvalid`.
+`IsInvalidRequest`, `IsAuthentication`, `IsPermission`, `IsPlanLimit`, `IsLocked`, `IsNotFound`, `IsConflict`, `IsGone`, `IsRateLimit`, `IsServer`, `IsOperationRetired`; no response at all is a `*trustcomponent.ConnectionError`, an invalid widget token `trustcomponent.ErrVerificationTokenInvalid`.
 
 ```go
 var tcErr *trustcomponent.Error

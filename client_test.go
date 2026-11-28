@@ -73,7 +73,7 @@ func TestSendsKeyUserAgentAndMetadataAndDecodesTheWidgetToken(t *testing.T) {
 		t.Fatalf("unexpected %v %v", res, err)
 	}
 	r := f.requests[0]
-	if r.URL.Path != "/captcha/v2/verifications/"+testID+"/results" || r.URL.RawQuery != "clientFailover=true" {
+	if r.URL.Path != "/captcha/v3/verifications/"+testID+"/results" || r.URL.RawQuery != "clientFailover=true" {
 		t.Fatalf("path %s?%s", r.URL.Path, r.URL.RawQuery)
 	}
 	if r.Header.Get("Authorization") != "Bearer ak_test" || !strings.HasPrefix(r.Header.Get("User-Agent"), "trustcomponent-go/") {
@@ -122,6 +122,14 @@ func TestProblemDetailsBecomeTypedErrorsWithTheCodeOfTheApi(t *testing.T) {
 	tc, _ := start(t, answer{404, nil, `{"status":404,"code":"validation_result_not_found","detail":"detail"}`})
 	_, _, err := tc.TaxValidation.ValidationResults.GetValidationResult(context.Background(), testID).Execute()
 	if e := apiError(t, err); !e.IsNotFound() || e.Code != "validation_result_not_found" {
+		t.Fatalf("got %v", e)
+	}
+}
+
+func TestAProjectLockedByTrustComponentIsItsOwnError(t *testing.T) {
+	tc, _ := start(t, answer{423, nil, `{"status":423,"code":"project_locked","detail":"detail"}`})
+	_, _, err := tc.TaxValidation.ValidationResults.GetValidationResult(context.Background(), testID).Execute()
+	if e := apiError(t, err); !e.IsLocked() || e.IsConflict() || e.Code != "project_locked" {
 		t.Fatalf("got %v", e)
 	}
 }

@@ -30,7 +30,8 @@ func (e *Error) IsAuthentication() bool { return e.Status == 401 }
 func (e *Error) IsPlanLimit() bool      { return e.Status == 402 }
 func (e *Error) IsPermission() bool     { return e.Status == 403 }
 func (e *Error) IsNotFound() bool       { return e.Status == 404 }
-func (e *Error) IsConflict() bool       { return e.Status == 409 || e.Status == 412 || e.Status == 423 }
+func (e *Error) IsConflict() bool       { return e.Status == 409 || e.Status == 412 }
+func (e *Error) IsLocked() bool         { return e.Status == 423 }
 func (e *Error) IsGone() bool           { return e.Status == 410 && !e.IsOperationRetired() }
 func (e *Error) IsRateLimit() bool      { return e.Status == 429 }
 func (e *Error) IsServer() bool         { return e.Status >= 500 }

@@ -56,16 +56,18 @@ func newTaxValidationModule(client *api.APIClient) *TaxValidationModule {
 
 // PlatformModule groups the resources of Platform.
 type PlatformModule struct {
-	Events *api.PlatformEventsAPIService
+	Projects *api.PlatformProjectsAPIService
+	Events   *api.PlatformEventsAPIService
 }
 
 func newPlatformModule(client *api.APIClient) *PlatformModule {
 	return &PlatformModule{
-		Events: client.PlatformEventsAPI,
+		Projects: client.PlatformProjectsAPI,
+		Events:   client.PlatformEventsAPI,
 	}
 }
 
 // Version is the SDK version, also sent in the User-Agent.
-const Version = "0.0.1-beta.2"
+const Version = "0.0.1-beta.3"
 
-const apiVersion = "0.0.1-beta.2"
+const apiVersion = "0.0.1-beta.3"
