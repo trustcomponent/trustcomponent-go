@@ -68,6 +68,6 @@ func newPlatformModule(client *api.APIClient) *PlatformModule {
 }
 
 // Version is the SDK version, also sent in the User-Agent.
-const Version = "0.0.1-beta.3"
+const Version = "0.0.1-beta.4"
 
-const apiVersion = "0.0.1-beta.3"
+const apiVersion = "0.0.1-beta.4"

@@ -20,7 +20,7 @@ import trustcomponent "github.com/trustcomponent/trustcomponent-go"
 
 tc := trustcomponent.New("ak_…")
 result, err := tc.Captcha.GetVerificationResult(ctx, r.FormValue("tc-verification-token"))
-if err == nil && result.GetVerificationPassed() { /* … */ }
+if err == nil && result.VerificationPassed { /* … */ }
 ```
 
 Create the API key (`ak_…`) in the dashboard under the project's API keys, or under the agency's API keys to reach its client projects. The key decides which projects and modules the client can use.
